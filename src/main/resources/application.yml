@@ -4,14 +4,19 @@ server:
 spring:
   profiles:
     active: dev
+  thymeleaf:
+    prefix: classpath:/templates/
+    cache: false
+    suffix: .html
+    mode: LEGACYHTML5
+    template-resolver-order: 0
   main:
     allow-circular-references: true
   datasource:
-    druid:
-      driver-class-name: ${rag.datasource.driver-class-name}
-      url: jdbc:mysql://${rag.datasource.host}:${rag.datasource.port}/${rag.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-      username: ${rag.datasource.username}
-      password: ${rag.datasource.password}
+    driver-class-name: ${rag.datasource.driver-class-name}
+    url: jdbc:mysql://${rag.datasource.host}:${rag.datasource.port}/${rag.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${rag.datasource.username}
+    password: ${rag.datasource.password}
   redis:
     host: ${rag.redis.host}
     port: ${rag.redis.port}
@@ -36,7 +41,7 @@ spring:
 mybatis:
   #mapper配置文件
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.vichayturen.rag_chatman.entity
+  type-aliases-package: com.vichayturen.rag_chatman.pojo.entity
   configuration:
     #开启驼峰命名
     map-underscore-to-camel-case: true
@@ -51,14 +56,8 @@ logging:
 
 rag:
   jwt:
-    # 设置jwt签名加密时使用的秘钥
-    admin-secret-key: itcast
-    # 设置jwt过期时间
-    admin-ttl: 7200000
-    # 设置前端传递过来的令牌名称
-    admin-token-name: token
-    user-secret-key: itheima
-    user-ttl: 7200000
+    user-secret-key: vichayturen
+    user-ttl: 86400000
     user-token-name: authentication
   llm:
     selected: zhipu

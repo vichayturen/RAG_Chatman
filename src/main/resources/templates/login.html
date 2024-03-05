@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="js/cookiehandle.js"></script>
+</head>
+<body>
+<div><span>用户</span><span><input id="username" type="text"></span></div>
+<div><span>密码</span><span><input id="password" type="password"></span></div>
+<button onclick="login">登录</button>
+<button onclick="signup">注册</button>
+<script>
+    function login() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        $.ajax({
+            type: 'post',
+            url: '/user/login',
+            data: JSON.stringify({
+                'username': username,
+                'password': password
+            }),
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (result) {
+                setCookie("token", result.token, 1);
+                location.assign("/chatList");
+            }
+        });
+    }
+    function signup() {
+        location.assign("/signup");
+    }
+</script>
+</body>
+</html>
