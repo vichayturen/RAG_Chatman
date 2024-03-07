@@ -25,7 +25,9 @@ public interface SseService {
 
     /**
      * 客户端发送消息到服务端
+     *
      * @param chatDto
+     * @return
      */
-    void sseChat(Long userId, ChatDto chatDto);
+    int sseChat(Long userId, ChatDto chatDto);
 }

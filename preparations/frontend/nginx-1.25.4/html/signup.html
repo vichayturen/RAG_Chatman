@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatman注册</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="js/cookiehandle.js"></script>
+</head>
+<body>
+<div><span>邮箱</span><span><input id="email" type="text"></span></div>
+<div><span>用户</span><span><input id="username" type="text"></span></div>
+<div><span>密码</span><span><input id="password" type="password"></span></div>
+<div><span>密码</span><span><input id="password2" type="password"></span></div>
+<div>
+    <span>验证码</span><span><input id="vcode" type="text"></span><span><button onclick="vcode()">发送验证码</button></span>
+    <span id="vcode-msg"></span>
+</div>
+<button onclick="signup()">注册</button>
+<button onclick="login()">我已注册，点击登录</button>
+<div id="signup-msg"></div>
+<script>
+    function vcode() {
+        var email = document.getElementById("email").value;
+        var vcode_msg = document.getElementById("vcode-msg");
+        $.ajax({
+            type: 'post',
+            url: '/api/user/vcode',
+            data: JSON.stringify({
+                'email': email
+            }),
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (result) {
+                vcode_msg.innerHTML="发送成功";
+            },
+            error: function (result) {
+                vcode_msg.innerHTML="发送失败，错误信息："+result.msg;
+            }
+        });
+    }
+    function signup() {
+        var email = document.getElementById("email").value;
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        var password2 = document.getElementById("password2").value;
+        var vcode = document.getElementById("vcode").value;
+        var signup_msg = document.getElementById("signup-msg");
+        if (password !== password2) alert("密码不一致！");
+        $.ajax({
+            type: 'post',
+            url: '/api/user/signup',
+            data: JSON.stringify({
+                'email': email,
+                'username': username,
+                'password': password,
+                'vcode': vcode
+            }),
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (resp) {
+                if (resp.code === 0) {
+                    signup_msg.innerHTML="注册成功，下面跳转到登陆界面...";
+                    setTimeout(() => {
+                        location.assign("/");
+                    }, 1000)
+                } else {
+                    signup_msg.innerHTML="注册失败，失败信息："+resp.msg;
+                }
+            }
+        });
+    }
+    function login() {
+        location.assign("/");
+    }
+</script>
+</body>
+</html>

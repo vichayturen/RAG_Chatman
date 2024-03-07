@@ -2,9 +2,10 @@ package com.vichayturen.rag_chatman.web.controller;
 
 import com.vichayturen.rag_chatman.constant.JwtClaimsConstant;
 import com.vichayturen.rag_chatman.pojo.dto.UserLoginDto;
+import com.vichayturen.rag_chatman.pojo.dto.UserSignupDto;
+import com.vichayturen.rag_chatman.pojo.dto.VcodeDto;
 import com.vichayturen.rag_chatman.pojo.entity.UserEntity;
 import com.vichayturen.rag_chatman.pojo.vo.UserLoginVo;
-import com.vichayturen.rag_chatman.pojo.vo.UserVo;
 import com.vichayturen.rag_chatman.properties.JwtProperties;
 import com.vichayturen.rag_chatman.result.Result;
 import com.vichayturen.rag_chatman.utils.JwtUtil;
@@ -42,5 +43,22 @@ public class UserController {
                 .token(token)
                 .build();
         return Result.success(userLoginVo);
+    }
+
+    @PostMapping("/vcode")
+    public Result vcode(@RequestBody VcodeDto vcodeDto) {
+        String email = vcodeDto.getEmail();
+        userService.vcode(email);
+        return Result.success();
+    }
+
+    @PostMapping("/signup")
+    public Result signup(@RequestBody UserSignupDto userSignupDto) {
+        String username = userSignupDto.getUsername();
+        String password = userSignupDto.getPassword();
+        String email = userSignupDto.getEmail();
+        String vcode = userSignupDto.getVcode();
+        userService.signup(email, username, password, vcode);
+        return Result.success();
     }
 }

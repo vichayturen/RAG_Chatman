@@ -7,10 +7,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.vichayturen.rag_chatman.pojo.entity.ChatCompletion;
 import com.vichayturen.rag_chatman.pojo.entity.Message;
 import com.vichayturen.rag_chatman.constant.enums.Role;
+import com.vichayturen.rag_chatman.properties.LlmProperties;
 import okhttp3.*;
 import okhttp3.sse.EventSource;
 import okhttp3.sse.EventSourceListener;
 import okhttp3.sse.EventSources;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +22,8 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class ChatGLM implements LanguageModel {
-    @Value("${rag.llm.zhipu.url}")
-    private String url;
-    @Value("${rag.llm.zhipu.api-key}")
-    private String apiKey;
-    @Value("${rag.llm.zhipu.model}")
-    private String model;
+    @Autowired
+    private LlmProperties llmProperties;
 
     @Override
     public void streamChat(String input, List<Message> history, EventSourceListener eventSourceListener) {
@@ -34,14 +32,14 @@ public class ChatGLM implements LanguageModel {
         Message newMessage = new Message(Role.USER.toString(), input);
         history.add(newMessage);
         ChatCompletion chatCompletion = ChatCompletion.builder()
-                .model(model)
+                .model(llmProperties.getModel())
                 .messages(history)
                 .build();
         RequestBody requestBody = RequestBody.create(JSON.toJSONBytes(chatCompletion), MediaType.parse(ContentType.JSON.getValue()));
         Request request = new Request.Builder()
-                .url(url)
+                .url(llmProperties.getUrl())
                 .post(requestBody)
-                .addHeader("Authorization", "Bearer "+apiKey)
+                .addHeader("Authorization", "Bearer "+llmProperties.getApiKey())
                 .build();
         EventSource eventSource = eventSourceFactory.newEventSource(request, eventSourceListener);
     }
@@ -52,14 +50,14 @@ public class ChatGLM implements LanguageModel {
         Message newMessage = new Message(Role.USER.toString(), input);
         history.add(newMessage);
         ChatCompletion chatCompletion = ChatCompletion.builder()
-                .model(model)
+                .model(llmProperties.getModel())
                 .messages(history)
                 .build();
         RequestBody requestBody = RequestBody.create(JSON.toJSONBytes(chatCompletion), MediaType.parse(ContentType.JSON.getValue()));
         Request request = new Request.Builder()
-                .url(url)
+                .url(llmProperties.getUrl())
                 .post(requestBody)
-                .addHeader("Authorization", "Bearer "+apiKey)
+                .addHeader("Authorization", "Bearer "+llmProperties.getApiKey())
                 .build();
         try {
             Response response = okHttpClient.newCall(request).execute();

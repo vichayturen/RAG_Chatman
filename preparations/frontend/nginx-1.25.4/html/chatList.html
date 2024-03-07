@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatman</title>
+</head>
+<body>
+<button onclick="newchat()">新chat</button>
+<button onclick="logout()">退出登录</button>
+<script>
+    function newchat() {
+        location.assign("/chat");
+    }
+    function logout() {
+        location.assign("/");
+    }
+</script>
+</body>
+</html>

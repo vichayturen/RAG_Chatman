@@ -10,6 +10,7 @@ import com.vichayturen.rag_chatman.utils.JwtUtil;
 import com.vichayturen.rag_chatman.web.service.ChatService;
 import com.vichayturen.rag_chatman.web.service.SseService;
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import java.util.Map;
 @CrossOrigin
 @Controller
 @RequestMapping("/chat")
+@Slf4j
 public class ChatController {
     @Autowired
     private SseService sseService;
@@ -31,19 +33,16 @@ public class ChatController {
 
     @PostMapping("/chat")
     @ResponseBody
-    public Result chat(@RequestBody ChatDto chatDto, @RequestHeader Map<String, String> headers) {
-        String token = headers.get(jwtProperties.getUserTokenName());
-        Claims claims = JwtUtil.parseJWT(jwtProperties.getUserSecretKey(), token);
-        Long userId = Long.valueOf(claims.get(JwtClaimsConstant.USER_ID).toString());
-        sseService.sseChat(userId, chatDto);
-        return Result.success();
+    public Result<Integer> chat(@RequestBody ChatDto chatDto, @RequestHeader Map<String, String> headers) {
+        log.info("接收到dto：{}", chatDto);
+        Long userId = BaseContext.getCurrentId();
+        int tokenNum = sseService.sseChat(userId, chatDto);
+        return Result.success(tokenNum);
     }
 
     @GetMapping("/createSse")
-    public SseEmitter createConnect(@RequestHeader Map<String, String> headers) {
-        String token = headers.get(jwtProperties.getUserTokenName());
-        Claims claims = JwtUtil.parseJWT(jwtProperties.getUserSecretKey(), token);
-        Long userId = Long.valueOf(claims.get(JwtClaimsConstant.USER_ID).toString());
+    public SseEmitter createSse(@RequestHeader Map<String, String> headers) {
+        Long userId = BaseContext.getCurrentId();
         return sseService.createSse(userId);
     }
 

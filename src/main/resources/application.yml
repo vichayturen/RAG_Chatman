@@ -8,7 +8,7 @@ spring:
     prefix: classpath:/templates/
     cache: false
     suffix: .html
-    mode: LEGACYHTML5
+    mode: HTML
     template-resolver-order: 0
   main:
     allow-circular-references: true
@@ -30,13 +30,19 @@ spring:
     host: smtp.qq.com
     port: 465
     username: 1073931273@qq.com
-    password: wpkefohqoljjbaeh
+    password: etcwugbbntlkbaeh
     default-encoding: UTF-8
+    protocol: smtps
     properties:
       mail:
-        debug: true
+        debug: false
         socketFactory:
           class: javax.net.ssl.SSLSocketFactory
+        smtp:
+          auth: true
+          ssl:
+            enabled: true
+
 
 mybatis:
   #mapper配置文件
@@ -56,14 +62,15 @@ logging:
 
 rag:
   jwt:
-    user-secret-key: vichayturen
+    user-secret-key: vichayturen-vichayturen-vichayturen-vichayturen
     user-ttl: 86400000
     user-token-name: authentication
   llm:
-    selected: zhipu
-    zhipu:
-      api-key: f8d197a3630fbba06bdccbb5f36340fe.qPuVwL0zPHsDOC8S
-      model: glm-4
-      url: https://open.bigmodel.cn/api/paas/v4/chat/completions
+    type: local #local,glm,gpt
+    api-key: 123
+    model: qwen
+    url: http://localhost:1222/chat/stream
   lucene:
     path: ${rag.lucene.path}
+  embedding:
+    url: http://localhost:1222/embedding

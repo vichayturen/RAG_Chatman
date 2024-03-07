@@ -12,7 +12,7 @@ CREATE TABLE `user` (
     UNIQUE (`username`),
     UNIQUE (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin COMMENT='用户信息';
-INSERT INTO `user` VALUES (1,'1073931273@qq.com','admin','e10adc3949ba59abbe56e057f20f883e','2022-02-17 09:16:20');
+INSERT INTO `user` VALUES (1,'12345@vichayturen.com','admin','e10adc3949ba59abbe56e057f20f883e','2022-02-17 09:16:20');
 
 DROP TABLE IF EXISTS `library`;
 CREATE TABLE `library` (

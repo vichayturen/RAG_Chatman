@@ -1,10 +1,10 @@
 package com.vichayturen.rag_chatman.utils;
 
-import com.vichayturen.rag_chatman.constant.Prompt;
+import com.vichayturen.rag_chatman.constant.PromptConstant;
 
 public class PromptUtils {
     public static String ragPrompt(String context, String question) {
-        return Prompt.RAG_TMPL
+        return PromptConstant.RAG_TMPL
                 .replaceFirst("\\{context}", context);
     }
 }
