@@ -28,7 +28,7 @@ public class LocalLlm implements LanguageModel {
     public void streamChat(String input, List<Message> history, EventSourceListener eventSourceListener) {
         OkHttpClient okHttpClient = getOkHttpClient();
         EventSource.Factory eventSourceFactory = EventSources.createFactory(okHttpClient);
-        Message newMessage = new Message(Role.USER.toString(), input);
+        Message newMessage = new Message(Role.user.toString(), input);
         history.add(newMessage);
         ChatCompletion chatCompletion = ChatCompletion.builder()
                 .messages(history)

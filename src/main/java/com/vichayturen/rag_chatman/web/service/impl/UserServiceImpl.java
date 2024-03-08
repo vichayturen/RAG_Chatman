@@ -13,6 +13,7 @@ import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,30 +37,42 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void signup(String email, String username, String password, String vcode) {
+        UserEntity user = userMapper.getUserFromEmail(email);
+        if (user != null) {
+            throw new BaseException("当前邮箱已被注册！");
+        }
+        UserEntity user2 = userMapper.getUserFromUsername(username);
+        if (user2 != null) {
+            throw new BaseException("当前用户名已被注册！");
+        }
         if (!vcode.equals(redisTemplate.opsForValue().get(RedisKeyConstant.VCODE_PREFIX+email))) {
             throw new BaseException("验证码错误！");
         }
+        if (password.length() < 8) {
+            throw new BaseException("密码过短，需要至少8位字符！");
+        }
         password = DigestUtils.md5DigestAsHex(password.getBytes());
-        UserEntity user = UserEntity.builder()
+        UserEntity user3 = UserEntity.builder()
                 .email(email)
                 .username(username)
                 .password(password)
                 .createTime(LocalDateTime.now())
                 .build();
-        userMapper.addUser(user);
+        userMapper.addUser(user3);
+        redisTemplate.delete(RedisKeyConstant.VCODE_PREFIX+email);
     }
 
     @Override
     public void vcode(String email) {
         if (!isEmailFormat(email)) {
-            throw new BaseException("邮件格式不正确！");
+            throw new BaseException("邮箱格式不正确！");
         }
         UserEntity user = userMapper.getUserFromEmail(email);
         if (user != null) {
-            throw new BaseException("当前邮箱已注册！");
+            throw new BaseException("当前邮箱已被注册！");
         }
         String vcode = randomVcode();
-        redisTemplate.opsForValue().set(RedisKeyConstant.VCODE_PREFIX+email, vcode);
+        redisTemplate.opsForValue().set(RedisKeyConstant.VCODE_PREFIX+email, vcode, 15, TimeUnit.MINUTES);
         myMailSender.sendVcode(email, vcode);
     }
 
@@ -69,7 +82,12 @@ public class UserServiceImpl implements UserService {
     }
 
     private String randomVcode() {
-        // TODO: 前面补0
-        return Integer.toString((int) (new Random().nextFloat() * 1000000));
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            int r = (int) (Math.random()*10);
+            char numChar = (char) ('0' + r);
+            sb.append(numChar);
+        }
+        return sb.toString();
     }
 }

@@ -29,7 +29,7 @@ public class ChatGLM implements LanguageModel {
     public void streamChat(String input, List<Message> history, EventSourceListener eventSourceListener) {
         OkHttpClient okHttpClient = getOkHttpClient();
         EventSource.Factory eventSourceFactory = EventSources.createFactory(okHttpClient);
-        Message newMessage = new Message(Role.USER.toString(), input);
+        Message newMessage = new Message(Role.user.toString(), input);
         history.add(newMessage);
         ChatCompletion chatCompletion = ChatCompletion.builder()
                 .model(llmProperties.getModel())
@@ -47,7 +47,7 @@ public class ChatGLM implements LanguageModel {
     @Override
     public String chat(String input, List<Message> history) {
         OkHttpClient okHttpClient = getOkHttpClient();
-        Message newMessage = new Message(Role.USER.toString(), input);
+        Message newMessage = new Message(Role.user.toString(), input);
         history.add(newMessage);
         ChatCompletion chatCompletion = ChatCompletion.builder()
                 .model(llmProperties.getModel())

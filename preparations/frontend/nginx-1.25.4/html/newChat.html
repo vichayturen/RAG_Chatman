@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" sizes="32x32" href="image/favicon.png">
+    <title>Chatman</title>
+    <script>
+        function upload() {
+            var chatName = document.getElementById("chat-name").value;
+            var inputFile = document.getElementById("input-file");
+            // TODO: 发送请求
+        }
+    </script>
+</head>
+<body>
+<h1>新建会话</h1>
+会话名称：<input type="text" id="chat-name">
+<br>
+<!--TODO-->
+选择图书馆：<input type="file" id="input-file" multiple>
+<br>
+<button onclick="upload()">确定</button>
+</body>
+</html>

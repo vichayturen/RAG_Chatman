@@ -31,8 +31,6 @@
         }
 
         window.onload = function () {
-            // TODO: 把这里跨域url换成反向代理
-            let back_url = "http://127.0.0.1:8080";
             let disconnectBtn = document.getElementById("disconnectSSE");
             let messageElement = document.getElementById("message");
             let chat = document.getElementById("chat");
@@ -47,7 +45,7 @@
                     }
                     uuid_str = uuid();
                     //创建sse
-                    const eventSource = new EventSourcePolyfill(back_url+'/chat/createSse', {
+                    const eventSource = new EventSourcePolyfill('/sse/chat/createSse', {
                         headers: {
                             'authentication': getCookie("token")
                         }
@@ -58,7 +56,7 @@
                         sse = event.target;
                         $.ajax({
                             type: 'post',
-                            url: back_url+'/chat/chat',
+                            url: '/api/chat/chat',
                             data: JSON.stringify({
                                 'chatId': 1,
                                 'history': [],
@@ -151,7 +149,7 @@
 </div>
 <div class="input-card">
     <div class="input-card-item">
-        <input id="message" placeholder="输入你的问题，回车结束......" type="text">
+        <input id="message" placeholder="输入你的问题" type="text">
     </div>
 </div>
 <div class="container" >

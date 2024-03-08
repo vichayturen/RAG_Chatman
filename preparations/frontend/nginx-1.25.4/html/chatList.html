@@ -2,18 +2,97 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" sizes="32x32" href="image/favicon.png">
     <title>Chatman</title>
+    <script>
+        var chatList = document.getElementById("chat-list");
+        var libraryList = document.getElementById("library-list");
+
+        function newChat() {
+            location.assign("/chat");
+        }
+        function newLibrary() {
+            location.assign("/newLibrary");
+        }
+        function logout() {
+            location.assign("/");
+        }
+
+        function deleteLibrary(id) {
+            $.ajax({
+                type: 'post',
+                url: '/api/library/deleteLibrary?libraryId='+id,
+                headers: {
+                    "authentication": getCookie("token"),
+                },
+                success: (resp) => {
+                    if (resp.code === 0) {
+                        location.reload();
+                    } else {
+                        alert("删除失败！\n错误信息："+resp.msg);
+                    }
+                }
+            });
+        }
+
+        function enterChat(id) {
+            // TODO: 实现跳转指定chat
+            location.assign("/chat");
+        }
+
+        window.onload = function () {
+            $.ajax({
+                type: 'get',
+                url: '/api/library/getAllLibrary',
+                headers: {
+                    "authentication": getCookie("token"),
+                },
+                success: (resp) => {
+                    if (resp.code === 0) {
+                        libraries = resp.data;
+                        for (let i = 0; i < libraries.length; i++) {
+                            let l = libraries[i];
+                            libraryList.innerHTML += "<div>"
+                                +l.name
+                                +"<button onclick=\"deleteLibrary("
+                                +l.id
+                                +")\">删除</button></div><br>";
+                        }
+                    } else {
+                        libraryList.innerHTML = resp.msg;
+                    }
+                }
+            });
+            $.ajax({
+                type: 'get',
+                url: '/api/library/getAllChat',
+                headers: {
+                    "authentication": getCookie("token"),
+                },
+                success: (resp) => {
+                    if (resp.code === 0) {
+                        chats = resp.data;
+                        for (let i = 0; i < chats.length; i++) {
+                            let c = chats[i];
+                            chatList.innerHTML += "<div>"+c.name+"<button onclick=\"enterChat("+c.id+")\">进入</button></div><br>"
+                        }
+                    } else {
+                        chatList.innerHTML = resp.msg;
+                    }
+                }
+            });
+        }
+    </script>
 </head>
 <body>
-<button onclick="newchat()">新chat</button>
+<h1>用户主页</h1>
+<button onclick="newChat()">新建会话</button>
+<button onclick="newLibrary()">新建图书馆</button>
 <button onclick="logout()">退出登录</button>
-<script>
-    function newchat() {
-        location.assign("/chat");
-    }
-    function logout() {
-        location.assign("/");
-    }
-</script>
+<hr>
+<div id="library-list"></div>
+<hr>
+<div id="chat-list"></div>
+<hr>
 </body>
 </html>
