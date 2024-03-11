@@ -6,18 +6,34 @@
     <title>Chatman</title>
     <script>
         function upload() {
-            var libraryName = document.getElementById("library-name").value;
-            var inputFile = document.getElementById("input-file");
-            // TODO
+            var form = document.getElementById("upload-form");
+            var formData = new FormData(form);
+            $.ajax({
+                method: 'post',
+                url: '/api/library/addLibrary',
+                data: formData,
+                headers: {
+                    "authentication": getCookie("token"),
+                },
+                success: (resp) => {
+                    let msg = document.getElementById("msg");
+                    msg.innerHTML = "上传成功！";
+                    setTimeout(() => {
+                        location.assign('/chatList');
+                    }, 1000)
+                }
+            })
         }
     </script>
 </head>
 <body>
 <h1>新建图书馆</h1>
-图书馆名称：<input type="text" id="library-name">
-<br>
-上传文档：<input type="file" id="input-file" multiple>
-<br>
-<button onclick="upload()">上传</button>
+<form method="post" enctype="multipart/form-data" id="upload-form">
+    <span>图书馆名称：</span><input type="text" id="library-name" name="library-name"><br>
+    <span>上传文档：</span><input type="file" id="input-file" name="input-file" multiple="multiple"><br>
+    <button onclick="upload()">确定</button>
+    <button onclick="location.assign('/chatList')">取消</button>
+</form>
+<div id="msg"></div>
 </body>
 </html>

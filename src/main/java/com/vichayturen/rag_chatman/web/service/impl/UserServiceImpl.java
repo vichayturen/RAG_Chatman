@@ -1,11 +1,14 @@
 package com.vichayturen.rag_chatman.web.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.vichayturen.rag_chatman.constant.RedisKeyConstant;
 import com.vichayturen.rag_chatman.exception.BaseException;
+import com.vichayturen.rag_chatman.mail.MailInfo;
 import com.vichayturen.rag_chatman.mail.MyMailSender;
 import com.vichayturen.rag_chatman.pojo.entity.UserEntity;
 import com.vichayturen.rag_chatman.web.mapper.UserMapper;
 import com.vichayturen.rag_chatman.web.service.UserService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,8 @@ public class UserServiceImpl implements UserService {
     private RedisTemplate redisTemplate;
     @Autowired
     private MyMailSender myMailSender;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public UserEntity login(String username, String password) {
@@ -73,7 +78,10 @@ public class UserServiceImpl implements UserService {
         }
         String vcode = randomVcode();
         redisTemplate.opsForValue().set(RedisKeyConstant.VCODE_PREFIX+email, vcode, 15, TimeUnit.MINUTES);
-        myMailSender.sendVcode(email, vcode);
+        MailInfo mailInfo = new MailInfo();
+        mailInfo.setTargetMail(email);
+        mailInfo.setVcode(vcode);
+        rabbitTemplate.convertAndSend("chatman-vcode", JSON.toJSONString(mailInfo));
     }
 
     private boolean isEmailFormat(String email) {

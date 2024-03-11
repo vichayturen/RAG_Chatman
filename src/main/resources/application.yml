@@ -4,12 +4,6 @@ server:
 spring:
   profiles:
     active: dev
-  thymeleaf:
-    prefix: classpath:/templates/
-    cache: false
-    suffix: .html
-    mode: HTML
-    template-resolver-order: 0
   main:
     allow-circular-references: true
   datasource:
@@ -26,6 +20,8 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 100MB
+      enabled: true
+      file-size-threshold: 0B
   mail:
     host: smtp.qq.com
     port: 465
@@ -42,7 +38,11 @@ spring:
           auth: true
           ssl:
             enabled: true
-
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: root
+    password: root
 
 mybatis:
   #mapper配置文件

@@ -27,10 +27,10 @@ public class ChatServiceImpl implements ChatService {
         chatMapper.addChat(userId, libraryId, ChatConstant.DEFAULT_CHAT_NAME, LocalDateTime.now());
         LibraryEntity library = libraryMapper.getLibraryById(libraryId);
         ChatVo chatVo = ChatVo.builder()
-                .id()
-                .name()
-                .libraryId()
-                .libraryName()
+//                .id()
+//                .name()
+//                .libraryId()
+//                .libraryName()
                 .build();
         return chatVo;
     }

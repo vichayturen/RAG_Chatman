@@ -15,6 +15,7 @@
 	<description>rag_chatman</description>
 	<properties>
 		<java.version>17</java.version>
+		<poi.version>5.2.3</poi.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -33,7 +34,17 @@
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>3.0.3</version>
 		</dependency>
-
+		<!-- poi -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>${poi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>${poi.version}</version>
+		</dependency>
 		<!-- jwt -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -95,7 +106,11 @@
 			<artifactId>hutool-all</artifactId>
 			<version>5.7.22</version>
 		</dependency>
-
+		<!--消息队列-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

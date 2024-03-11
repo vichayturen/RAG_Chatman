@@ -1,11 +1,8 @@
 package com.vichayturen.rag_chatman.web.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.vichayturen.rag_chatman.config.LocalCache;
+import com.vichayturen.rag_chatman.context.LocalCache;
 import com.vichayturen.rag_chatman.exception.BaseException;
-import com.vichayturen.rag_chatman.llm.ConsoleEventSourceListener;
 import com.vichayturen.rag_chatman.llm.LocalLlm;
 import com.vichayturen.rag_chatman.llm.LocalLlmEventSourceListener;
 import com.vichayturen.rag_chatman.pojo.dto.ChatDto;
@@ -19,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 描述：

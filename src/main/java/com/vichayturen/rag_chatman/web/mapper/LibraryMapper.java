@@ -3,6 +3,7 @@ package com.vichayturen.rag_chatman.web.mapper;
 import com.vichayturen.rag_chatman.pojo.entity.LibraryEntity;
 import com.vichayturen.rag_chatman.pojo.vo.LibraryVo;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -18,4 +19,7 @@ public interface LibraryMapper {
 
     @Select("select id, name from library where user_id=#{userId}")
     List<LibraryVo> getAllLibraryByUserId(Long userId);
+
+    @Insert("insert into library (user_id, path, name, create_time) values (#{userId}, #{path}, #{name}, #{createTime})")
+    void addLibrary(LibraryEntity library);
 }

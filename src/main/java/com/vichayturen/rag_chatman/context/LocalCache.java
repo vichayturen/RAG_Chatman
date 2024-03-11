@@ -1,4 +1,4 @@
-package com.vichayturen.rag_chatman.config;
+package com.vichayturen.rag_chatman.context;
 
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
