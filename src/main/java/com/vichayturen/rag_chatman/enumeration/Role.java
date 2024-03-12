@@ -1,4 +1,4 @@
-package com.vichayturen.rag_chatman.constant.enums;
+package com.vichayturen.rag_chatman.enumeration;
 
 public enum Role {
     system,

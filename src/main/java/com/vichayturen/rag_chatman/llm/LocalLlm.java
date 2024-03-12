@@ -2,7 +2,7 @@ package com.vichayturen.rag_chatman.llm;
 
 import cn.hutool.http.ContentType;
 import com.alibaba.fastjson.JSON;
-import com.vichayturen.rag_chatman.constant.enums.Role;
+import com.vichayturen.rag_chatman.enumeration.Role;
 import com.vichayturen.rag_chatman.pojo.entity.ChatCompletion;
 import com.vichayturen.rag_chatman.pojo.entity.Message;
 import com.vichayturen.rag_chatman.properties.LlmProperties;

@@ -6,14 +6,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.vichayturen.rag_chatman.pojo.entity.ChatCompletion;
 import com.vichayturen.rag_chatman.pojo.entity.Message;
-import com.vichayturen.rag_chatman.constant.enums.Role;
+import com.vichayturen.rag_chatman.enumeration.Role;
 import com.vichayturen.rag_chatman.properties.LlmProperties;
 import okhttp3.*;
 import okhttp3.sse.EventSource;
 import okhttp3.sse.EventSourceListener;
 import okhttp3.sse.EventSources;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

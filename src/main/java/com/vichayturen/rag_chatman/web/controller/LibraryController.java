@@ -22,17 +22,13 @@ public class LibraryController {
     private LibraryService libraryService;
 
     @PostMapping("addLibrary")
-    public Result addLibrary(String libraryName, @RequestParam MultipartFile inputFile) {
+    public Result addLibrary(String libraryName, MultipartFile[] inputFiles) {
         // TODO:实现方法
         Long userId = BaseContext.getCurrentId();
-        String originalFilename = inputFile.getOriginalFilename();
-        try {
-            InputStream inputStream = inputFile.getInputStream();
-            libraryService.addLibrary(userId, libraryName, inputStream);
-            return Result.success();
-        } catch (IOException e) {
-            return Result.error(e.toString());
-        }
+        log.info("添加图书馆：{}", libraryName);
+        System.out.println(inputFiles.length);
+        libraryService.addLibrary(userId, libraryName, inputFiles);
+        return Result.success();
     }
 
     @PostMapping("deleteLibrary")

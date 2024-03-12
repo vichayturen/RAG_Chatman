@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class LibraryEntity implements Serializable {
     private Long id;
     private Long userId;
-    private String path;
+    private String indexName;
     private String name;
     private LocalDateTime createTime;
 }
