@@ -7,19 +7,6 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="js/cookiehandle.js"></script>
     <script>
-        var chatList = document.getElementById("chat-list");
-        var libraryList = document.getElementById("library-list");
-
-        function newChat() {
-            location.assign("/chat");
-        }
-        function newLibrary() {
-            location.assign("/newLibrary");
-        }
-        function logout() {
-            location.assign("/");
-        }
-
         function deleteLibrary(id) {
             $.ajax({
                 type: 'post',
@@ -38,11 +25,12 @@
         }
 
         function enterChat(id) {
-            // TODO: 实现跳转指定chat
             location.assign("/chat");
         }
 
         window.onload = function () {
+            let chatList = document.getElementById("chat-list");
+            let libraryList = document.getElementById("library-list");
             $.ajax({
                 type: 'get',
                 url: '/api/library/getAllLibrary',
@@ -67,7 +55,7 @@
             });
             $.ajax({
                 type: 'get',
-                url: '/api/library/getAllChat',
+                url: '/api/chat/getAllChat',
                 headers: {
                     "authentication": getCookie("token"),
                 },
@@ -88,12 +76,14 @@
 </head>
 <body>
 <h1>用户主页</h1>
-<button onclick="newChat()">新建会话</button>
-<button onclick="newLibrary()">新建图书馆</button>
-<button onclick="logout()">退出登录</button>
+<button onclick="location.assign('/newChat');">新建会话</button>
+<button onclick="location.assign('/newLibrary');">新建图书馆</button>
+<button onclick="location.assign('/');">退出登录</button>
 <hr>
+<h2>图书馆列表</h2>
 <div id="library-list"></div>
 <hr>
+<h2>聊天列表</h2>
 <div id="chat-list"></div>
 <hr>
 </body>

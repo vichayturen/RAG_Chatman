@@ -7,7 +7,7 @@ import java.util.List;
 
 @Service
 public interface ChatService {
-    ChatVo addChat(Long userId, Long libraryId);
+    void addChat(Long userId, String chatName, Long libraryId);
     void deleteChat(Long userId, Long chatId);
     void updateChat(Long userId, Long chatId, String newName);
     List<ChatVo> getAllChat(Long userId);

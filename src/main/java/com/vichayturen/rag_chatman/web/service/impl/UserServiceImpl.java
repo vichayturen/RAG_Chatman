@@ -32,6 +32,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity login(String username, String password) {
         UserEntity user = userMapper.getUserFromUsername(username);
+        if (user == null) {
+            throw new BaseException("用户名不存在！");
+        }
         password = DigestUtils.md5DigestAsHex(password.getBytes());
         if (!password.equals(user.getPassword())) {
             throw new BaseException("密码错误！");

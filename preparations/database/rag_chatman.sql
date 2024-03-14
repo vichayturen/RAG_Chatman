@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS `rag_chatman` ;
 CREATE DATABASE  IF NOT EXISTS `rag_chatman` ;
 USE `rag_chatman`;
 
@@ -18,11 +19,11 @@ DROP TABLE IF EXISTS `library`;
 CREATE TABLE `library` (
     `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
     `user_id` bigint NOT NULL COMMENT '用户id',
-    `path` varchar(255) NOT NULL COMMENT '路径',
+    `indexName` varchar(255) NOT NULL COMMENT '索引库名称',
     `name` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '名称',
     `create_time` datetime DEFAULT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE (`user_id`, `path`)
+    UNIQUE (`indexName`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin COMMENT='库信息';
 
 DROP TABLE IF EXISTS `chat`;

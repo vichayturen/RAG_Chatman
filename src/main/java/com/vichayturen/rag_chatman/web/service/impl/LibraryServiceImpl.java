@@ -1,7 +1,7 @@
 package com.vichayturen.rag_chatman.web.service.impl;
 
 import com.vichayturen.rag_chatman.document.DocumentLoader;
-import com.vichayturen.rag_chatman.document.EsClient;
+import com.vichayturen.rag_chatman.document.MixSearchClient;
 import com.vichayturen.rag_chatman.document.TextSpliter;
 import com.vichayturen.rag_chatman.exception.BaseException;
 import com.vichayturen.rag_chatman.pojo.entity.LibraryEntity;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.Doc;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -25,13 +24,18 @@ public class LibraryServiceImpl implements LibraryService {
     @Autowired
     private LibraryMapper libraryMapper;
     @Autowired
-    private EsClient esClient;
+    private MixSearchClient mixSearchClient;
 
     @Override
     public void deleteLibrary(Long userId, Long libraryId) {
         LibraryEntity library = libraryMapper.getLibraryById(libraryId);
-        if (!Objects.equals(library.getUserId(), userId)) {
+        if (!library.getUserId().equals(userId)) {
             throw new BaseException("删除失败！");
+        }
+        try {
+            mixSearchClient.delete(library.getIndexName());
+        } catch (IOException e) {
+            throw new BaseException(e.toString());
         }
         libraryMapper.deleteLibraryById(libraryId);
     }
@@ -51,17 +55,17 @@ public class LibraryServiceImpl implements LibraryService {
                 String text = DocumentLoader.load(inputStream);
                 System.out.println(text);
                 List<String> chunks = TextSpliter.split(text);
-                esClient.insert(chunks, indexName);
+                mixSearchClient.insert(chunks, indexName);
             }
         } catch (IOException e) {
             throw new BaseException(e.toString());
         }
-//        LibraryEntity library = LibraryEntity.builder()
-//                .userId(userId)
-//                .name(libraryName)
-//                .indexName(indexName)
-//                .createTime(LocalDateTime.now())
-//                .build();
-//        libraryMapper.addLibrary(library);
+        LibraryEntity library = LibraryEntity.builder()
+                .userId(userId)
+                .name(libraryName)
+                .indexName(indexName)
+                .createTime(LocalDateTime.now())
+                .build();
+        libraryMapper.addLibrary(library);
     }
 }

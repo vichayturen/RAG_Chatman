@@ -12,3 +12,6 @@ rag:
     database: 11
   lucene:
     path: .fd
+  mixsearch:
+    host: localhost
+    port: 9280

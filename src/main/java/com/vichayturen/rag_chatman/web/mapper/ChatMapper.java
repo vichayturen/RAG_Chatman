@@ -16,7 +16,9 @@ public interface ChatMapper {
 
     void updateChat(Long chatId, String newName);
 
+    @Delete("delete from chat where id=#{chatId}")
     void deleteChatById(Long chatId);
 
-    void addChat(Long userId, Long libraryId, String defaultChatName, LocalDateTime now);
+    @Insert("insert into chat (user_id, library_id, name, create_time) values (#{userId}, #{libraryId}, #{chatName}, #{createTime})")
+    void addChat(Long userId, Long libraryId, String chatName, LocalDateTime createTime);
 }

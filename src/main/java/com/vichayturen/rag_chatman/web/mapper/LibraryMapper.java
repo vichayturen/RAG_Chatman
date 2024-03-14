@@ -20,6 +20,6 @@ public interface LibraryMapper {
     @Select("select id, name from library where user_id=#{userId}")
     List<LibraryVo> getAllLibraryByUserId(Long userId);
 
-    @Insert("insert into library (user_id, path, name, create_time) values (#{userId}, #{path}, #{name}, #{createTime})")
+    @Insert("insert into library (user_id, indexName, name, create_time) values (#{userId}, #{indexName}, #{name}, #{createTime})")
     void addLibrary(LibraryEntity library);
 }

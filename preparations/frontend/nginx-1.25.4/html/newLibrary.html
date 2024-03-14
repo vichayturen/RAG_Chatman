@@ -10,10 +10,11 @@
         function upload() {
             var formData = new FormData();
             var libraryName = document.getElementById("library-name");
-            var inputFiles = document.getElementById("input-files");
             formData.append("libraryName", libraryName.value);
-            formData.append("inputFiles", inputFiles.files);
-            console.log(inputFiles.files);
+            var inputFiles = document.getElementById("input-files").files;
+            for (let i = 0; i < inputFiles.length; i++) {
+                formData.append("inputFiles", inputFiles[i]);
+            }
             $.ajax({
                 method: 'post',
                 url: '/api/library/addLibrary',

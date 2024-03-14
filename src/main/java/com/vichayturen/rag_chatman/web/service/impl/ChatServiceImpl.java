@@ -23,16 +23,9 @@ public class ChatServiceImpl implements ChatService {
     private LibraryMapper libraryMapper;
 
     @Override
-    public ChatVo addChat(Long userId, Long libraryId) {
-        chatMapper.addChat(userId, libraryId, ChatConstant.DEFAULT_CHAT_NAME, LocalDateTime.now());
-        LibraryEntity library = libraryMapper.getLibraryById(libraryId);
-        ChatVo chatVo = ChatVo.builder()
-//                .id()
-//                .name()
-//                .libraryId()
-//                .libraryName()
-                .build();
-        return chatVo;
+    public void addChat(Long userId, String chatName, Long libraryId) {
+        if (chatName.isEmpty()) chatName = ChatConstant.DEFAULT_CHAT_NAME;
+        chatMapper.addChat(userId, libraryId, chatName, LocalDateTime.now());
     }
 
     @Override

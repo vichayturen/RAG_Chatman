@@ -4,21 +4,76 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" sizes="32x32" href="image/favicon.png">
     <title>Chatman</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="js/cookiehandle.js"></script>
     <script>
-        function upload() {
-            var chatName = document.getElementById("chat-name").value;
-            var inputFile = document.getElementById("input-file");
-            // TODO: 发送请求
+        function addOption(value, text) {
+            return "<option value=\"" + value + "\">" + text + "</option>";
+        }
+
+        function confirm() {
+            let msg = document.getElementById("msg");
+            let chatName = document.getElementById('chat-name').value;
+            let librarySelect = document.getElementById('library-select');
+            let index = librarySelect.selectedIndex;
+            let libraryId = librarySelect.options[index].value;
+            console.log(libraryId);
+            $.ajax({
+                type: 'post',
+                url: '/api/chat/addChat',
+                headers: {
+                    "authentication": getCookie("token"),
+                },
+                data: JSON.stringify({
+                    'chatName': chatName,
+                    'libraryId': parseInt(libraryId)
+                }),
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                success: (resp) => {
+                    if (resp.code === 0) {
+                        msg.innerHTML = "创建成功，正在跳转主页...";
+                        location.assign('/chatList');
+                    } else {
+                        msg.innerHTML = "创建失败，错误信息：" + resp.msg;
+                    }
+                }
+            });
+        }
+
+        window.onload = () => {
+            let librarySelect = document.getElementById('library-select');
+            $.ajax({
+                type: 'get',
+                url: '/api/library/getAllLibrary',
+                headers: {
+                    "authentication": getCookie("token"),
+                },
+                success: (resp) => {
+                    if (resp.code === 0) {
+                        libraries = resp.data;
+                        for (let i = 0; i < libraries.length; i++) {
+                            librarySelect.innerHTML += addOption(libraries[i].id, libraries[i].name);
+                        }
+                    } else {
+                        let msg = document.getElementById("msg");
+                        msg.innerHTML = resp.msg;
+                    }
+                }
+            });
         }
     </script>
 </head>
 <body>
 <h1>新建会话</h1>
-会话名称：<input type="text" id="chat-name">
+会话名称：<input type="text" id="chat-name"><br>
+选择图书馆：
+<select id="library-select">
+    <option value="0">无</option>
+</select>
 <br>
-<!--TODO-->
-选择图书馆：<input type="file" id="input-file" multiple>
-<br>
-<button onclick="upload()">确定</button>
+<button onclick="confirm()">确定</button>
+<button onclick="location.assign('/chatList')">取消</button>
+<div id="msg"></div>
 </body>
 </html>

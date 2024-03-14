@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitDirectConfig {
-    // TODO
     public final static String DIRECT_NAME = "v-direct";
 
     @Bean("rabbit-direct-queue")

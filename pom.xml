@@ -16,6 +16,8 @@
 	<properties>
 		<java.version>17</java.version>
 		<poi.version>5.2.3</poi.version>
+		<es.version>7.17.18</es.version>
+		<okhttp.version>4.11.0</okhttp.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -82,12 +84,12 @@
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<version>4.11.0</version>
+			<version>${okhttp.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp-sse</artifactId>
-			<version>4.11.0</version>
+			<version>${okhttp.version}</version>
 		</dependency>
 		<!--发送邮件验证码-->
 		<dependency>
@@ -110,6 +112,17 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		<!-- es-client -->
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>elasticsearch-rest-client</artifactId>
+			<version>${es.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>elasticsearch-rest-high-level-client</artifactId>
+			<version>${es.version}</version>
 		</dependency>
 	</dependencies>
 

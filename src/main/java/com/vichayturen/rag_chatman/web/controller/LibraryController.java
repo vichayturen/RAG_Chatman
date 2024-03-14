@@ -23,7 +23,6 @@ public class LibraryController {
 
     @PostMapping("addLibrary")
     public Result addLibrary(String libraryName, MultipartFile[] inputFiles) {
-        // TODO:实现方法
         Long userId = BaseContext.getCurrentId();
         log.info("添加图书馆：{}", libraryName);
         System.out.println(inputFiles.length);

@@ -2,6 +2,7 @@ package com.vichayturen.rag_chatman.web.controller;
 
 import com.vichayturen.rag_chatman.constant.JwtClaimsConstant;
 import com.vichayturen.rag_chatman.context.BaseContext;
+import com.vichayturen.rag_chatman.pojo.dto.AddChatDto;
 import com.vichayturen.rag_chatman.pojo.dto.ChatDto;
 import com.vichayturen.rag_chatman.pojo.entity.ChatEntity;
 import com.vichayturen.rag_chatman.pojo.entity.LibraryEntity;
@@ -53,10 +54,10 @@ public class ChatController {
 
     @PostMapping("/addChat")
     @ResponseBody
-    public Result<ChatVo> addChat(Long libraryId) {
+    public Result<ChatVo> addChat(@RequestBody AddChatDto addChatDto) {
         Long userId = BaseContext.getCurrentId();
-        ChatVo chatVo = chatService.addChat(userId, libraryId);
-        return Result.success(chatVo);
+        chatService.addChat(userId, addChatDto.getChatName(), addChatDto.getLibraryId());
+        return Result.success();
     }
 
     @PostMapping("/deleteChat")
