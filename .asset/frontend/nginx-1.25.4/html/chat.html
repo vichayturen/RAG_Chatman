@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<link href="css/markdown.css" rel="stylesheet" type="text/css"/>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chatman</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="image/favicon.png">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="js/markdown.min.js"></script>
+    <script src="js/eventsource.min.js"></script>
+    <script src="js/cookiehandle.js"></script>
+    <script>
+        function setText(text, uuid_str) {
+            let content = document.getElementById(uuid_str);
+            content.innerHTML = marked(text);
+        }
+
+        function uuid() {
+            var s = [];
+            var hexDigits = "0123456789abcdef";
+            for (let i = 0; i < 36; i++) {
+                s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+            }
+            s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+            s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+            s[8] = s[13] = s[18] = s[23] = "-";
+            return s.join("");
+        }
+
+        window.onload = function () {
+            let queries = location.search.slice(1).split("&");
+            let queriesKeyValues = {}
+            for (let i = 0; i < queries.length; i++) {
+                 let pair = queries[i].split("=");
+                queriesKeyValues[pair[0]] = pair[1];
+            }
+            console.log(queriesKeyValues);
+            let chatId = parseInt(queriesKeyValues.id);
+            let libraryId;
+            let libraryName;
+            $.ajax({
+                type: 'get',
+                url: '/api/chat/getChatById?chatId='+chatId,
+                headers: {
+                    "authentication": getCookie("token"),
+                },
+                success: (resp) => {
+                    if (resp.code === 0) {
+                        libraryId = resp.data.libraryId;
+                        libraryName = resp.data.libraryName;
+                        document.getElementById('library-name').innerHTML = "图书馆名称："+libraryName;
+                    } else {
+                        alert("获取聊天信息失败！")
+                    }
+                }
+            });
+            let disconnectBtn = document.getElementById("disconnectSSE");
+            let messageElement = document.getElementById("message");
+            let chat = document.getElementById("chat");
+            let sse;
+            let text = '';
+            let uuid_str;
+            // 回车事件
+            messageElement.onkeydown = function () {
+                if (window.event.keyCode === 13) {
+                    if (!messageElement.value) {
+                        return;
+                    }
+                    uuid_str = uuid();
+                    //创建sse
+                    const eventSource = new EventSourcePolyfill('/sse/chat/createSse', {
+                        headers: {
+                            'authentication': getCookie("token")
+                        }
+                    });
+
+                    eventSource.onopen = (event) => {
+                        console.log("开始输出后端返回值");
+                        sse = event.target;
+                        $.ajax({
+                            type: 'post',
+                            url: '/api/chat/chat',
+                            data: JSON.stringify({
+                                'chatId': chatId,
+                                'history': [],
+                                'input': messageElement.value
+                            }),
+                            contentType: "application/json;charset=UTF-8",
+                            dataType: "json",
+                            headers: {
+                                "authentication": getCookie("token"),
+                            },
+                            success: function (result) {
+                                //新增问题框
+                                chat.innerHTML += '<tr><td style="height: 30px;">' + messageElement.value + '<br/><br/> tokens：' + result.data + '</td></tr>';
+                                messageElement.value = null
+                                //新增答案框
+                                chat.innerHTML += '<tr><td><article id="' + uuid_str + '" class="markdown-body"></article></td></tr>';
+                            },
+                            complete: function () {
+                            },
+                            error: function () {
+                                console.info("发送问题失败！");
+                            }
+                        })
+                    };
+                    eventSource.onmessage = (event) => {
+                        console.log("接受数据：" + event.data);
+                        if (event.lastEventId === "[TOKENS]") {
+                            text = text + event.data.slice(1, event.data.length-1);
+                            setText(text, uuid_str)
+                            text = ''
+                            return;
+                        }
+                        if (event.data === "\"[DONE]\"") {
+                            if (sse) {
+                                sse.close();
+                            }
+                            return;
+                        }
+                        let json_data = JSON.parse(event.data);
+                        if (json_data.content == null || json_data.content === 'null') {
+                            return;
+                        }
+                        text = text + json_data.content;
+                        setText(text, uuid_str);
+                    };
+                    eventSource.onerror = (event) => {
+                        console.log("onerror", event);
+                        if (event.readyState === EventSource.CLOSED) {
+                            console.log('connection is closed');
+                        } else {
+                            console.log("Error occured", event);
+                        }
+                        event.target.close();
+                    };
+                    eventSource.addEventListener("customEventName", (event) => {
+                        console.log("Message id is " + event.lastEventId);
+                    });
+                }
+            };
+
+            disconnectBtn.onclick = function () {
+                if (sse) {
+                    sse.close();
+                }
+            };
+        };
+    </script>
+</head>
+
+<body>
+<div>
+    <span><button onclick="location.assign('/chatList')">chat列表</button></span>
+    <span id="library-name"></span>
+</div>
+<div class="float-card">
+    <div class="float-card-item">
+        <a href="https://www.unfbx.com" target="_blank" rel="noopener noreferrer">Website</a>
+    </div>
+    <div class="float-card-item">
+        <a href="https://github.com/Grt1228" target="_blank" rel="noopener noreferrer">Github</a>
+    </div>
+    <div class="float-card-item" id="disconnectSSE">
+        <a  rel="noopener noreferrer">停止输出</a>
+    </div>
+</div>
+<div class="input-card">
+    <div class="input-card-item">
+        <input id="message" placeholder="输入你的问题" type="text">
+    </div>
+</div>
+<div class="container" >
+    <table border="1">
+        <tbody id="chat">
+        </tbody>
+    </table>
+</div>
+
+
+</body>
+<style>
+    .markdown-body {
+        box-sizing: border-box;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+
+    input {
+        height: 50px;
+        width: 500px;
+        font-size: 20px;
+        background: no-repeat;
+        color: #d0838e;
+    }
+
+    .container {
+        width: 60%;
+        border: 1px solid black;
+        display: flex;
+        flex-direction: column;
+        margin-left: 20%;
+        margin-top: 10px;
+        margin-bottom: 100px;
+    }
+
+    .input-card {
+        position: fixed;
+        display: inline-block;
+        left: 5%;
+        bottom: 0;
+    }
+
+    .input-card-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .float-card {
+        position: fixed;
+        display: inline-block;
+        right: 120px;
+        top: 100px;
+    }
+
+    .float-card-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #ccccd6;
+        margin-bottom: 16px;
+    }
+
+    .float-card-item:last-child {
+        margin-bottom: 0px;
+        background-color: #d0838e;
+    }
+
+    .float-card-item a {
+        text-decoration: none;
+        color: #594649;
+        font-size: 13px;
+    }
+</style>
+</html>

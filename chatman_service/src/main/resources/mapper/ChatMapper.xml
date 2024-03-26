@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vichayturen.rag_chatman.chatman_service.web.mapper.ChatMapper">
+    <select id="getChatVoById" resultType="com.vichayturen.rag_chatman.chatman_service.pojo.vo.ChatVo">
+        select c.id as id,c.name as name,l.id as libraryId,l.name as libraryName
+        from chat as c left join library as l on c.library_id=l.id
+        where c.id=#{chatId}
+    </select>
+</mapper>

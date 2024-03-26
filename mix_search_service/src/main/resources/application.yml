@@ -1,0 +1,9 @@
+server:
+  port: 9280
+
+spring:
+  application:
+    name: mix-search-service
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
